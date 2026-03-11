@@ -1,4 +1,5 @@
 'use client';
+// v1.1.0 - Categorias Colapsáveis
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
