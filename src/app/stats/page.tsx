@@ -11,6 +11,7 @@ export default function AdminStatsPage() {
     const { user, loading: authLoading } = useAuth();
     const [stats, setStats] = useState<StatsAdmin | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -20,9 +21,19 @@ export default function AdminStatsPage() {
             return;
         }
         async function load() {
-            const s = await getAdminStats();
-            setStats(s);
-            setLoading(false);
+            try {
+                const s = await getAdminStats();
+                if (!s) {
+                    setError("Não foi possível carregar as estatísticas. Verifique se a função SQL foi criada no Supabase.");
+                } else {
+                    setStats(s);
+                }
+            } catch (err) {
+                console.error("Erro ao carregar stats:", err);
+                setError("Ocorreu um erro inesperado ao carregar os dados.");
+            } finally {
+                setLoading(false);
+            }
         }
         load();
     }, [user, authLoading, router]);
@@ -31,6 +42,22 @@ export default function AdminStatsPage() {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
                 <div style={{ width: 48, height: 48, border: '3px solid rgba(212,175,55,0.2)', borderTopColor: '#d4af37', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
+                <Activity size={48} style={{ color: 'var(--text-disabled)', marginBottom: 20 }} />
+                <h3 style={{ color: 'var(--text-primary)', marginBottom: 12 }}>Ops! Algo deu errado</h3>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: 32 }}>{error}</p>
+                <button
+                    onClick={() => { setError(null); setLoading(true); window.location.reload(); }}
+                    style={{ background: 'var(--amber)', color: '#000', border: 'none', padding: '12px 24px', borderRadius: 8, fontWeight: 700, cursor: 'pointer' }}
+                >
+                    Tentar Novamente
+                </button>
             </div>
         );
     }
@@ -211,7 +238,7 @@ export default function AdminStatsPage() {
                             ))}
                         </div>
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-disabled)', marginTop: 8, fontWeight: 600 }}>
-                            {stats.feedbacks.length} avaliações
+                            {(stats.feedbacks?.length || 0)} avaliações
                         </p>
                     </motion.div>
                 </div>
@@ -262,11 +289,11 @@ export default function AdminStatsPage() {
                             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', fontWeight: 500 }}>Monitoramento de satisfação e qualidade do serviço</p>
                         </div>
                         <span style={{ fontSize: '0.6rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', padding: '6px 16px', borderRadius: 20, background: 'var(--surface-2)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
-                            {stats.feedbacks.length} Respostas
+                            {(stats.feedbacks?.length || 0)} Respostas
                         </span>
                     </div>
 
-                    {stats.feedbacks.length > 0 ? (
+                    {stats.feedbacks && stats.feedbacks.length > 0 ? (
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: 20 }}>
                             {stats.feedbacks.map((f, i) => (
                                 <motion.div
