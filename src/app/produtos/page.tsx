@@ -7,12 +7,13 @@ import { getProdutos, excluirProduto, type Produto } from '@/lib/storage';
 import { formatarMoeda } from '@/lib/calculos';
 import { CATEGORIAS_PRODUTO } from '@/lib/categoriasProduto';
 import PageSkeleton from '@/components/PageSkeleton';
-import { Package, Plus, Search, ChevronRight, Trash2, Folder } from 'lucide-react';
+import { Package, Plus, Search, ChevronRight, Trash2, Folder, ChevronDown } from 'lucide-react';
 
 export default function ProdutosPage() {
     const [produtos, setProdutos] = useState<Produto[]>([]);
     const [mounted, setMounted] = useState(false);
     const [filtro, setFiltro] = useState('');
+    const [categoriasAbertas, setCategoriasAbertas] = useState<Set<string>>(new Set());
     const router = useRouter();
 
     useEffect(() => {
@@ -40,6 +41,15 @@ export default function ProdutosPage() {
                 alert("Erro ao excluir o produto. Tente novamente.");
             }
         }
+    }
+
+    function toggleCategoria(catId: string) {
+        setCategoriasAbertas(prev => {
+            const novo = new Set(prev);
+            if (novo.has(catId)) novo.delete(catId);
+            else novo.add(catId);
+            return novo;
+        });
     }
 
     const produtosFiltrados = produtos.filter(p =>
@@ -117,59 +127,72 @@ export default function ProdutosPage() {
 
                                 const infoCat = CATEGORIAS_PRODUTO.find(c => c.id === catId);
                                 const nomeCat = infoCat ? `${infoCat.emoji} ${infoCat.nome}` : '📦 Outros / Não Categorizados';
+                                const estaAberta = categoriasAbertas.has(catId) || filtro.length > 0;
 
                                 return (
-                                    <section key={catId} style={{ marginBottom: 48 }}>
-                                        <div className="category-header">
-                                            <Folder size={18} className="text-amber" />
-                                            <h3 className="category-title">{nomeCat}</h3>
+                                    <section key={catId} style={{ marginBottom: 32 }}>
+                                        <div
+                                            className={`category-header collapsible ${estaAberta ? 'active' : ''}`}
+                                            onClick={() => toggleCategoria(catId)}
+                                        >
+                                            <div className="cat-title-left">
+                                                <ChevronDown size={20} className={`chevron-indicator ${estaAberta ? 'rotated' : ''}`} />
+                                                <Folder size={18} className="text-amber" />
+                                                <h3 className="category-title">{nomeCat}</h3>
+                                            </div>
                                             <span className="category-count">{prodsNoGrupo.length} {prodsNoGrupo.length === 1 ? 'produto' : 'produtos'}</span>
                                         </div>
 
-                                        <div className="responsive-grid responsive-grid-3">
-                                            {prodsNoGrupo.map((p) => (
-                                                <Link key={p.id} href={`/produtos/${p.id}/editar`} className="product-card-premium glass card-hover">
-                                                    <div className="card-top">
-                                                        <div className="p-icon-box">
-                                                            <Package size={20} className="text-amber" />
+                                        {estaAberta && (
+                                            <div className="responsive-grid responsive-grid-3 animate-fadeInSmall">
+                                                {prodsNoGrupo.map((p) => (
+                                                    <Link key={p.id} href={`/produtos/${p.id}/editar`} className="product-card-premium glass card-hover">
+                                                        <div className="card-top">
+                                                            <div className="p-icon-box">
+                                                                <Package size={20} className="text-amber" />
+                                                            </div>
+                                                            <span className="p-unit">{p.unidade}</span>
                                                         </div>
-                                                        <span className="p-unit">{p.unidade}</span>
-                                                    </div>
 
-                                                    <div className="card-body">
-                                                        <h3 className="p-name">{p.nome}</h3>
-                                                        <div className="p-stat-row">
-                                                            <span className="p-label">Volume:</span>
-                                                            <span className="p-val">{p.volumeTotal} {p.unidade}</span>
+                                                        <div className="card-body">
+                                                            <h3 className="p-name">{p.nome}</h3>
+                                                            <div className="p-stat-row">
+                                                                <span className="p-label">Volume:</span>
+                                                                <span className="p-val">{p.volumeTotal} {p.unidade}</span>
+                                                            </div>
+                                                            <div className="p-stat-row">
+                                                                <span className="p-label">Custo por {p.unidade}:</span>
+                                                                <span className="p-val text-amber">
+                                                                    R$ {(p.precoCompra / (p.volumeTotal || 1)).toFixed(4).replace('.', ',')}
+                                                                </span>
+                                                            </div>
+                                                            <div className="p-stat-row" style={{ marginTop: 4, opacity: 0.6 }}>
+                                                                <span className="p-label">Compra:</span>
+                                                                <span className="p-val">{formatarMoeda(p.precoCompra)}</span>
+                                                            </div>
                                                         </div>
-                                                        <div className="p-stat-row">
-                                                            <span className="p-label">Custo por {p.unidade}:</span>
-                                                            <span className="p-val text-amber">
-                                                                R$ {(p.precoCompra / (p.volumeTotal || 1)).toFixed(4).replace('.', ',')}
-                                                            </span>
-                                                        </div>
-                                                        <div className="p-stat-row" style={{ marginTop: 4, opacity: 0.6 }}>
-                                                            <span className="p-label">Compra:</span>
-                                                            <span className="p-val">{formatarMoeda(p.precoCompra)}</span>
-                                                        </div>
-                                                    </div>
 
-                                                    <div className="card-footer">
-                                                        <span className="btn-edit-text">EDITAR DETALHES</span>
-                                                        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                                                            <button
-                                                                onClick={(e) => handleExcluirProduto(p.id, e)}
-                                                                className="btn-delete-icon"
-                                                                title="Excluir Produto"
-                                                            >
-                                                                <Trash2 size={16} />
-                                                            </button>
-                                                            <ChevronRight size={14} />
+                                                        <div className="card-footer">
+                                                            <span className="btn-edit-text">EDITAR DETALHES</span>
+                                                            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        e.stopPropagation();
+                                                                        handleExcluirProduto(p.id, e);
+                                                                    }}
+                                                                    className="btn-delete-icon"
+                                                                    title="Excluir Produto"
+                                                                >
+                                                                    <Trash2 size={16} />
+                                                                </button>
+                                                                <ChevronRight size={14} />
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </Link>
-                                            ))}
-                                        </div>
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
                                     </section>
                                 );
                             });
@@ -182,9 +205,21 @@ export default function ProdutosPage() {
                 .header-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
                 .title-platinum { font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-top: 4px; }
                 
-                .category-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
+                .category-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; }
+                .category-header.collapsible { cursor: pointer; transition: all 0.2s; }
+                .category-header.collapsible:hover { border-color: var(--amber-dim); }
+                .cat-title-left { display: flex; align-items: center; gap: 12px; }
                 .category-title { font-size: 1rem; font-weight: 800; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.05em; }
                 .category-count { font-size: 0.75rem; color: var(--text-disabled); font-weight: 600; background: rgba(255,255,255,0.03); padding: 2px 8px; border-radius: 99px; }
+
+                .chevron-indicator { color: var(--text-disabled); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+                .chevron-indicator.rotated { transform: rotate(-180deg); color: var(--amber); }
+
+                @keyframes fadeInSmall {
+                    from { opacity: 0; transform: translateY(-4px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fadeInSmall { animation: fadeInSmall 0.3s ease-out forwards; }
 
                 .search-box {
                     display: flex;
