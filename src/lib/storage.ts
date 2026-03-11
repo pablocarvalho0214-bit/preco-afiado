@@ -319,66 +319,20 @@ export async function getAdminStats(): Promise<StatsAdmin | null> {
     const user = await getUsuarioAtual();
     if (!user || !ADMIN_EMAILS.includes(user.email)) return null;
 
-    // 1. Total de usuários (Contagem exata na tabela perfis)
-    const { count: totalUsuarios } = await supabase
-        .from('perfis')
-        .select('*', { count: 'exact', head: true });
+    try {
+        const { data, error } = await supabase.rpc('get_global_admin_stats');
 
-    // 2. Usuários "Online" (Viram o app nos últimos 15 min)
-    const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
-    const { count: usuariosOnline } = await supabase
-        .from('perfis')
-        .select('*', { count: 'exact', head: true })
-        .gt('last_seen', fifteenMinAgo);
+        if (error) {
+            console.error('Erro ao buscar estatísticas globais via RPC:', error);
+            // Fallback para o comportamento antigo se o RPC ainda não existir
+            return null;
+        }
 
-    // 3. Novos Hoje (Últimas 24h)
-    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-    const { count: novosHoje } = await supabase
-        .from('perfis')
-        .select('*', { count: 'exact', head: true })
-        .gt('criado_em', twentyFourHoursAgo);
-
-    // 4. Distribuição de Tipos
-    const { data: perfisTipos } = await supabase
-        .from('perfis')
-        .select('tipo');
-
-    const distribuicao = {
-        autonomo: perfisTipos?.filter(p => p.tipo === 'autonomo').length || 0,
-        empresario: perfisTipos?.filter(p => p.tipo === 'empresario').length || 0
-    };
-
-    // 5. Total de Produtos
-    const { count: totalProdutos } = await supabase
-        .from('produtos')
-        .select('*', { count: 'exact', head: true });
-
-    // 6. Total de Serviços (Precificações)
-    const { count: totalServicos } = await supabase
-        .from('precificacoes')
-        .select('*', { count: 'exact', head: true });
-
-    // 7. Feedbacks e Rating
-    const { data: feedbacks } = await supabase
-        .from('feedbacks')
-        .select('*')
-        .order('criado_em', { ascending: false })
-        .limit(10);
-
-    const mediaRating = feedbacks && feedbacks.length > 0
-        ? feedbacks.reduce((acc, curr) => acc + curr.rating, 0) / feedbacks.length
-        : 0;
-
-    return {
-        totalUsuarios: totalUsuarios || 0,
-        usuariosOnline: usuariosOnline || 0,
-        totalProdutos: totalProdutos || 0,
-        totalServicos: totalServicos || 0,
-        mediaRating: mediaRating,
-        novosHoje: novosHoje || 0,
-        distribuicao,
-        feedbacks: feedbacks || []
-    };
+        return data as StatsAdmin;
+    } catch (err) {
+        console.error('Erro crítico em getAdminStats:', err);
+        return null;
+    }
 }
 
 // ─────────────────────────────────────────────────────────────
