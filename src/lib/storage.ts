@@ -315,7 +315,7 @@ export const ADMIN_EMAILS = [
     'gabrielaconsultorafinanceira@gmail.com'
 ];
 
-export async function getAdminStats(): Promise<StatsAdmin | null> {
+export async function getAdminStats(): Promise<StatsAdmin | { error: string } | null> {
     const user = await getUsuarioAtual();
     if (!user || !ADMIN_EMAILS.includes(user.email)) return null;
 
@@ -324,14 +324,13 @@ export async function getAdminStats(): Promise<StatsAdmin | null> {
 
         if (error) {
             console.error('Erro ao buscar estatísticas globais via RPC:', error);
-            // Fallback para o comportamento antigo se o RPC ainda não existir
-            return null;
+            return { error: error.message || 'Erro desconhecido no Supabase' };
         }
 
         return data as StatsAdmin;
-    } catch (err) {
+    } catch (err: any) {
         console.error('Erro crítico em getAdminStats:', err);
-        return null;
+        return { error: err.message || 'Erro de conexão ou execução' };
     }
 }
 

@@ -24,7 +24,9 @@ export default function AdminStatsPage() {
             try {
                 const s = await getAdminStats();
                 if (!s) {
-                    setError("Não foi possível carregar as estatísticas. Verifique se a função SQL foi criada no Supabase.");
+                    setError("Usuário não autorizado ou não encontrado.");
+                } else if ('error' in s) {
+                    setError(s.error);
                 } else {
                     setStats(s);
                 }
