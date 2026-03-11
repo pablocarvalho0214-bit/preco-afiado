@@ -1,0 +1,88 @@
+
+> preco-afiado@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 3 errors:
+./src/app/dashboard/page.tsx:8:1
+Module not found: Can't resolve '@/lib/supabase'
+[0m [90m  6 |[39m [36mimport[39m { getUsuarioAtual[33m,[39m getPrecificacoes[33m,[39m type [33mPrecificacaoSalva[39m[33m,[39m getConfig[33m,[39m getProdutos } [36mfrom[39m [32m'@/lib/storage'[39m[33m;[39m
+ [90m  7 |[39m [36mimport[39m { formatarMoeda } [36mfrom[39m [32m'@/lib/calculos'[39m[33m;[39m
+[31m[1m>[22m[39m[90m  8 |[39m [36mimport[39m { supabase } [36mfrom[39m [32m'@/lib/supabase'[39m[33m;[39m
+ [90m    |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m  9 |[39m [36mimport[39m [33mTopBar[39m [36mfrom[39m [32m'@/components/TopBar'[39m[33m;[39m
+ [90m 10 |[39m [36mimport[39m [33mBottomNav[39m [36mfrom[39m [32m'@/components/BottomNav'[39m[33m;[39m
+ [90m 11 |[39m [36mimport[39m [33mOnboardingTour[39m [36mfrom[39m [32m'@/components/OnboardingTour'[39m[33m;[39m[0m
+
+Import map: aliased to relative './src/lib/supabase' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/app/dashboard/page.tsx [Client Component Browser]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/dashboard/page.tsx [Client Component SSR]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./src/app/categorias/page.tsx:5:1
+Export categorias doesn't exist in target module
+[0m [90m 3 |[39m [36mimport[39m { useEffect[33m,[39m useState } [36mfrom[39m [32m'react'[39m[33m;[39m
+ [90m 4 |[39m [36mimport[39m { useRouter } [36mfrom[39m [32m'next/navigation'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m { categorias[33m,[39m getCategoriaById } [36mfrom[39m [32m'@/lib/categorias'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 6 |[39m [36mimport[39m { getUsuarioAtual[33m,[39m getSubcategorias[33m,[39m type [33mSubcategoria[39m } [36mfrom[39m [32m'@/lib/storage'[39m[33m;[39m
+ [90m 7 |[39m [36mimport[39m [33mTopBar[39m [36mfrom[39m [32m'@/components/TopBar'[39m[33m;[39m
+ [90m 8 |[39m [36mimport[39m [33mBottomNav[39m [36mfrom[39m [32m'@/components/BottomNav'[39m[33m;[39m[0m
+
+The export categorias was not found in module [project]/src/lib/categorias.ts [app-client] (ecmascript).
+Did you mean to import getCategoriaById?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/categorias/page.tsx [Client Component Browser]
+    ./src/app/categorias/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/categorias/page.tsx [Client Component SSR]
+    ./src/app/categorias/page.tsx [Server Component]
+
+
+./src/app/categorias/page.tsx:5:1
+Export categorias doesn't exist in target module
+[0m [90m 3 |[39m [36mimport[39m { useEffect[33m,[39m useState } [36mfrom[39m [32m'react'[39m[33m;[39m
+ [90m 4 |[39m [36mimport[39m { useRouter } [36mfrom[39m [32m'next/navigation'[39m[33m;[39m
+[31m[1m>[22m[39m[90m 5 |[39m [36mimport[39m { categorias[33m,[39m getCategoriaById } [36mfrom[39m [32m'@/lib/categorias'[39m[33m;[39m
+ [90m   |[39m [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 6 |[39m [36mimport[39m { getUsuarioAtual[33m,[39m getSubcategorias[33m,[39m type [33mSubcategoria[39m } [36mfrom[39m [32m'@/lib/storage'[39m[33m;[39m
+ [90m 7 |[39m [36mimport[39m [33mTopBar[39m [36mfrom[39m [32m'@/components/TopBar'[39m[33m;[39m
+ [90m 8 |[39m [36mimport[39m [33mBottomNav[39m [36mfrom[39m [32m'@/components/BottomNav'[39m[33m;[39m[0m
+
+The export categorias was not found in module [project]/src/lib/categorias.ts [app-ssr] (ecmascript).
+Did you mean to import getCategoriaById?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/app/categorias/page.tsx [Client Component Browser]
+    ./src/app/categorias/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/categorias/page.tsx [Client Component SSR]
+    ./src/app/categorias/page.tsx [Server Component]
+
+
+    at <unknown> (./src/app/dashboard/page.tsx:8:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./src/app/categorias/page.tsx:5:1)
+    at <unknown> (./src/app/categorias/page.tsx:5:1)
